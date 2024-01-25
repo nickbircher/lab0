@@ -9,11 +9,11 @@ expected_frequency = {
 }
 
 
-def is_english(text: str) -> bool:
+def english_score(text: str) -> int:
     text = text.lower()
     text_length = len(text)
 
-    return sum(abs(expected_frequency[letter] - (text.count(letter) / text_length * 100)) for letter in expected_frequency) < 50
+    return sum(abs(expected_frequency[letter] - (text.count(letter) / text_length * 100)) for letter in expected_frequency)
 
 
 def main():
@@ -24,7 +24,7 @@ def main():
         for key in range(256):
             key = bytes([key])
             result = xor_strings(hex_to_bytes(line), key)
-            if is_english(result):
+            if english_score(result) < 50:
                 print(result)
 
 
