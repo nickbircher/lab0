@@ -1,5 +1,4 @@
 import base64
-from itertools import product
 from XOR import xor_strings
 from common import hex_to_bytes
 from singleXOR import english_score, expected_frequency
@@ -25,19 +24,24 @@ def find_key_length(ciphertext: bytes, max_key_length: int) -> int:
     return best_key_length
 
 
-def decrypt(ciphertext: bytes, key_length: int):
-    keys = [list() for _ in range(key_length)]
+def decrypt(ciphertext: bytes, key_length: int) -> bytes:
+    key = bytearray(key_length)
 
     for i in range(key_length):
         block = ciphertext[i::key_length]
+        best_score = 100
+        best_key = 0
 
         for k in range(256):  # Try all possible single-byte keys
             plaintext = xor_strings(block, bytes([k]))
             score = english_score(plaintext)
-            if score < 50:
-                    keys[i].append(k)
-    for key in product(*keys):
-        print(xor_strings(ciphertext, bytes(key)))
+            if score < best_score:
+                    best_score = score
+                    best_key = k
+
+        key[i] = best_key
+
+    return xor_strings(ciphertext, key)
 
 
 def main():
@@ -45,7 +49,9 @@ def main():
         lines = file.read()
         lines = base64.b64decode(lines)
         key_length = find_key_length(lines, 10)
-        decrypt(lines, key_length)
+        print(key_length)
+
+        print(decrypt(lines, key_length))
 
 
 if __name__ == '__main__':
