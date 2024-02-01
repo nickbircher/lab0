@@ -61,11 +61,7 @@ def main():
     with open('Lab0.TaskII.D.txt', 'r') as file:
         lines = file.read()
         key_length = find_key_length(lines, 16)
-        print(key_length)
         key = find_key(lines, key_length)
-        print(key)
-        alphabetical_key = ''.join(chr(k + 97) for k in key)
-        print(alphabetical_key)
 
         print(decrypt(lines, key))
 
